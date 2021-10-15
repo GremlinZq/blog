@@ -1,9 +1,10 @@
 import * as axios  from 'axios';
 
 const instance = axios.create({
-    baseURL: 'https://conduit.productionready.io/api/'
+    baseURL: 'https://conduit-api-realworld.herokuapp.com/api/'
 })
 
-const articlesApi = {
-    getArticles: () => instance.get('articles')
+export const articlesApi = {
+    getArticles: () => instance.get('articles'),
+    getCurrentArticle: title => instance.get(`articles/${title}`)
 }
