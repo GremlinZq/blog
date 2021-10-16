@@ -5,12 +5,13 @@ import ArticleListItem from "./ArticleListItem/ArticleListItem";
 import './ArticleList.scss';
 
 const ArticleList = props => {
-    const {articles, isLoadingAllArticle,currentPage, setCurrentPage} = props;
-    const articlesList = articles.map((article, idx) => <ArticleListItem tabIndex={idx} key={uniqueId('article-')}{...article} />)
+    const {articles, isLoadingAllArticle, currentPage, setCurrentPage} = props;
 
-    const handleClick = page => {
-        setCurrentPage(page);
-    }
+    const articlesList = articles.map((article, idx) => {
+        return (
+            <ArticleListItem tabIndex={idx} key={uniqueId('article-')}{...article} />
+        )
+    })
 
     return (
         <div className='container'>
@@ -22,7 +23,10 @@ const ArticleList = props => {
                     }
                 </ul>
                 <div className='pagination d-flex justify-content-center align-items-center mb-3'>
-                    <Pagination defaultCurrent={currentPage} total={50} onChange={handleClick}/>
+                    <Pagination defaultCurrent={currentPage}
+                                total={50}
+                                onChange={(page) => setCurrentPage(page)}
+                    />
                 </div>
             </div>
         </div>

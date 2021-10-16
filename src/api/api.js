@@ -5,6 +5,6 @@ const instance = axios.create({
 })
 
 export const articlesApi = {
-    getArticles: () => instance.get('articles'),
+    getArticles: currentPage => instance.get(`articles?limit=5&offset=${currentPage * 5 - 5}`),
     getCurrentArticle: title => instance.get(`articles/${title}`)
 }
