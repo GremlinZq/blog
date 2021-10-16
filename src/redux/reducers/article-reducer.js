@@ -42,7 +42,7 @@ const articleReducer = (state = initialState, action) => {
         case SET_CURRENT_PAGE:
             return {
                 ...state,
-                currentPage: action.currentPage,
+                currentPage: action.page,
             }
         default:
             return state
@@ -56,8 +56,8 @@ const setLoadingAllArticles = isLoadingAllArticle => ({type: INSTALL_DOWNLOAD_AR
 
 export const setCurrentPage = page => ({type: SET_CURRENT_PAGE, page})
 
-export const getArticlesList = () => dispatch => {
-    articlesApi.getArticles()
+export const getArticlesList = currentPage => dispatch => {
+    articlesApi.getArticles(currentPage)
         .then(res => {
             console.log(res)
             dispatch(setLoadingAllArticles(false))

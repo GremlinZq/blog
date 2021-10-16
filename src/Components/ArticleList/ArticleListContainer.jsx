@@ -7,13 +7,7 @@ const ArticleListContainer = props => {
     const {articles, getArticlesList, isLoadingAllArticle, currentPage, setCurrentPage} = props;
 
     useEffect(() => {
-        if (articles.length === 0) {
-            getArticlesList();
-        }
-    }, [getArticlesList, articles])
-
-    useEffect(() => {
-        getArticlesList();
+        getArticlesList(currentPage);
     }, [currentPage, getArticlesList])
 
     return <ArticleList
