@@ -1,134 +1,127 @@
-import {stopSubmit} from "redux-form";
 import Cookies from 'universal-cookie';
+import { authApi } from '../../api/api';
 
-import {authApi} from "../../api/api";
-
-// const SET_LOGIN_USER = 'auth/SET_LOGIN_USER';
-const SET_UPDATE_AUTH_USER = 'auth/SET_UPDATE_AUTH_USER'
+const SET_UPDATE_AUTH_USER = 'auth/SET_UPDATE_AUTH_USER';
 const GET_LOGGED_IN = 'auth/GET_LOGGED_IN';
 const INSTALL_EDITED_PROFILE = 'auth/INSTALL_EDITED_PROFILE';
 
 const cookies = new Cookies();
 
 const initialState = {
-    isLoggedIn: !!cookies.get('authToken'),
-    authUser: {
-        username: null,
-        email: null,
-        image: null,
-        bio: null,
-        token: null,
-    },
-    profileEdited: false
-}
-// ewqedxwqweqw@bk.ru
-// 3213213214122124124325656
+  isLoggedIn: !!cookies.get('authToken'),
+  authUser: {
+    username: null,
+    email: null,
+    image: null,
+    bio: null,
+    token: null,
+  },
+  profileEdited: false,
+};
 
 const authReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case SET_UPDATE_AUTH_USER:
-            return {
-                ...state,
-                authUser: {
-                    ...state.authUser,
-                    ...action.user,
-                },
-            }
-        case GET_LOGGED_IN:
-            return {
-                ...state,
-                isLoggedIn: action.isLoggedIn,
-            }
-        case INSTALL_EDITED_PROFILE:
-            return {
-                ...state,
-                profileEdited: action.edited
-            }
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case SET_UPDATE_AUTH_USER:
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          ...action.user,
+        },
+      };
+    case GET_LOGGED_IN:
+      return {
+        ...state,
+        isLoggedIn: action.isLoggedIn,
+      };
+    case INSTALL_EDITED_PROFILE:
+      return {
+        ...state,
+        profileEdited: action.edited,
+      };
+    default:
+      return state;
+  }
+};
 
-const setUpdateAuthUser  = user => ({type: SET_UPDATE_AUTH_USER, user})
-const installEditedProfile = edited => ({type: INSTALL_EDITED_PROFILE, edited})
-export const getLoggedIn = isLoggedIn => ({type: GET_LOGGED_IN, isLoggedIn})
+const setUpdateAuthUser = user => ({ type: SET_UPDATE_AUTH_USER, user });
+const installEditedProfile = edited => ({ type: INSTALL_EDITED_PROFILE, edited });
+export const getLoggedIn = isLoggedIn => ({ type: GET_LOGGED_IN, isLoggedIn });
 
 export const requestUserRegister = (username, email, password) => async dispatch => {
-    try {
-        const res = await authApi.registerUser(username, email, password);
-        if (res.status === 200) {
-            dispatch(requestLogin(email, password))
-        }
-
-    } catch(err) {
-        console.log(err.response)
+  try {
+    const res = await authApi.registerUser(username, email, password);
+    if (res.status === 200) {
+      dispatch(requestLogin(email, password));
     }
-}
+
+  } catch (error) {
+
+  }
+};
 
 export const logOut = () => dispatch => {
-    dispatch(getLoggedIn(false))
-    cookies.remove('authToken')
+  dispatch(getLoggedIn(false));
+  cookies.remove('authToken');
 };
 
 export const requestLogin = (email, password, setError) => async dispatch => {
-    try {
-        const res = await authApi.login(email, password)
+  try {
+    const res = await authApi.login(email, password);
 
-        if (res.status === 200) {
-            dispatch(getLoggedIn(true))
+    if (res.status === 200) {
+      dispatch(getLoggedIn(true));
 
-            const {user} = res.data;
-            const cookie_date = new Date();
-            cookie_date.setMonth(cookie_date.getMonth() + 1);
-            cookie_date.toUTCString();
+      const { user } = res.data;
+      const cookieDate = new Date();
+      cookieDate.setMonth(cookieDate.getMonth() + 1);
+      cookieDate.toUTCString();
 
-            cookies.set('authToken', user.token, {expires: cookie_date});
-            dispatch(setUpdateAuthUser(user))
-            dispatch(requestAuthUser());
-        }
-    } catch (err) {
-        dispatch(getLoggedIn(false))
-
-        setError('form', {
-            type: 'server',
-            message: err.response.data.errors['email or password'][0]
-        })
+      cookies.set('authToken', user.token, { expires: cookieDate });
+      dispatch(setUpdateAuthUser(user));
+      dispatch(requestAuthUser());
     }
-}
+  } catch (err) {
+    dispatch(getLoggedIn(false));
+
+    setError('form', {
+      type: 'server',
+      message: err.response.data.errors['email or password'][0],
+    });
+  }
+};
 
 export const requestAuthUser = () => async dispatch => {
-    try {
-        const res = await authApi.authMe()
-        const {data, status} = res;
-        const {user} = data;
+  try {
+    const res = await authApi.authMe();
+    const { data, status } = res;
+    const { user } = data;
 
-        if (status === 200) {
-            dispatch(getLoggedIn(true))
-            dispatch(setUpdateAuthUser(user))
-        }
+    if (status === 200) {
+      dispatch(getLoggedIn(true));
+      dispatch(setUpdateAuthUser(user));
     }
-    catch(err) {
-        dispatch(stopSubmit('registration', {_error: err.message}))
-    }
-}
+  } catch (err) {
+
+  }
+};
 
 export const getUpdatedProfile = (user, setError) => async dispatch => {
-    try {
-        const res = await authApi.updateProfile(user.username, user.email, user.password, user.image);
+  try {
+    const res = await authApi.updateProfile(user.username, user.email, user.password, user.image);
 
-        if (res.status === 200) {
-            dispatch(setUpdateAuthUser(user))
-            dispatch(installEditedProfile(true))
-        }
-        dispatch(installEditedProfile(false))
+    if (res.status === 200) {
+      dispatch(setUpdateAuthUser(user));
+      dispatch(installEditedProfile(true));
     }
-    catch(err) {
-        dispatch(installEditedProfile(false))
-        setError('form', {
-            type: 'server',
-            message: err.response.data.message
-        })
-    }
-}
+    dispatch(installEditedProfile(false));
+  } catch (err) {
+    dispatch(installEditedProfile(false));
+    setError('form', {
+      type: 'server',
+      message: err.response.data.message,
+    });
+  }
+};
 
-export default authReducer
+export default authReducer;
