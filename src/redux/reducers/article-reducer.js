@@ -5,13 +5,19 @@ const GET_CURRENT_ARTICLE = 'article/GET_CURRENT_ARTICLE';
 const INSTALL_DOWNLOAD_ARTICLE = 'article/INSTALL DOWNLOAD ARTICLE';
 const INSTALL_DOWNLOAD_ARTICLES = 'article/INSTALL_DOWNLOAD_ARTICLES';
 const SET_CURRENT_PAGE = 'articles/SET_CURRENT_PAGE';
+const SET_ARTICLES_COUNT = 'articles/SET_ARTICLES_COUNT';
+const SET_OPEN_ARTICLE = 'articles/SET_OPEN_ARTICLE';
+const SET_SUCCESSFUL_ARTICLE_CREATION = 'articles/SET_SUCCESSFUL_ARTICLE_CREATION';
 
 const initialState = {
     articles: [],
     currentArticle: {},
+    articlesCount: 0,
     isLoadingAllArticle: false,
     isLoadingArticle: false,
     currentPage: 1,
+    openArticle: false,
+    successfulArticleCreation: false
 }
 
 const articleReducer = (state = initialState, action) => {
@@ -44,6 +50,21 @@ const articleReducer = (state = initialState, action) => {
                 ...state,
                 currentPage: action.page,
             }
+        case SET_ARTICLES_COUNT:
+            return {
+                ...state,
+                articlesCount: action.count,
+            }
+        case SET_OPEN_ARTICLE:
+            return {
+                ...state,
+                openArticle: action.openArticle,
+            }
+        case SET_SUCCESSFUL_ARTICLE_CREATION:
+            return {
+                ...state,
+                successfulArticleCreation: action.success
+            }
         default:
             return state
     }
@@ -53,32 +74,86 @@ const setArticles = articles => ({type: GET_ARTICLES, articles})
 const setCurrentArticle = article => ({type: GET_CURRENT_ARTICLE, article})
 const setLoadingArticle = isLoadingArticle => ({type: INSTALL_DOWNLOAD_ARTICLE, isLoadingArticle})
 const setLoadingAllArticles = isLoadingAllArticle => ({type: INSTALL_DOWNLOAD_ARTICLES, isLoadingAllArticle})
+const setArticlesCount = count => ({type: SET_ARTICLES_COUNT, count})
+const successfulArticleCreation = success => ({type: SET_SUCCESSFUL_ARTICLE_CREATION, success});
+
+export const setOpenArticle = openArticle => ({type : SET_OPEN_ARTICLE, openArticle})
 
 export const setCurrentPage = page => ({type: SET_CURRENT_PAGE, page})
 
-export const getArticlesList = currentPage => dispatch => {
-    articlesApi.getArticles(currentPage)
-        .then(res => {
-            console.log(res)
-            dispatch(setLoadingAllArticles(false))
-            if (res.status === 200) {
-                dispatch(setArticles(res.data.articles))
-                dispatch(setLoadingAllArticles(true))
-            }
-        }).catch(err => `Error: ${err.message} status: ${err.status}`)
-    dispatch(setLoadingArticle(false))
+export const getArticlesList = currentPage => async dispatch => {
+    try {
+        dispatch(setLoadingAllArticles(false))
+
+        const res = await articlesApi.getArticles(currentPage)
+
+
+        if (res.status === 200) {
+            dispatch(setArticlesCount(res.data.articlesCount))
+            dispatch(setArticles(res.data.articles))
+            dispatch(setLoadingAllArticles(true))
+        }
+    } catch (err) {
+
+    }
 }
 
-export const getArticle = title => dispatch => {
-    articlesApi.getCurrentArticle(title)
-        .then(res => {
-            dispatch(setLoadingArticle(false))
-            if (res.status === 200) {
-                dispatch(setCurrentArticle(res.data.article))
-                dispatch(setLoadingArticle(true))
-            }
-        }).catch(err => `Error: ${err.message} status: ${err.status}`)
-    dispatch(setLoadingArticle(false))
+export const getArticle = title => async dispatch => {
+    try {
+        dispatch(setLoadingArticle(false))
+
+        const res = await articlesApi.getCurrentArticle(title)
+
+        if (res.status === 200) {
+            dispatch(setCurrentArticle(res.data.article))
+            dispatch(setArticlesCount(res.data.articlesCount))
+            dispatch(setLoadingArticle(true))
+        }
+    } catch (err) {
+
+    }
+}
+
+export const createArticleCard = ({title, description, text, tags}, setError) => async dispatch => {
+    try {
+        const res = await articlesApi.createArticle(title, description, text, tags)
+
+        if (res.status === 200) {
+            dispatch(successfulArticleCreation(true))
+        }
+        dispatch(successfulArticleCreation(false))
+    }
+    catch (err) {
+
+    }
+}
+
+export const editArticleCard = (slug, values) => async dispatch => {
+    try {
+        const res = await articlesApi.editArticle(slug, values.title, values.description, values.body, values.tagList)
+
+        if(res.status === 200) {
+            dispatch(successfulArticleCreation(true))
+        }
+        dispatch(successfulArticleCreation(false))
+    }
+    catch(err) {
+
+    }
+}
+
+export const deleteArticleCard = slug => async dispatch => {
+    try {
+        const res = await articlesApi.deleteArticle(slug)
+
+        if(res.status === 204) {
+            dispatch(successfulArticleCreation(true))
+        }
+        dispatch(successfulArticleCreation(false))
+    }
+    catch(err) {
+
+    }
 }
 
 export default articleReducer;
