@@ -1,17 +1,22 @@
 import React from 'react';
-import Authentication from "./ Authentication/ Authentication";
-import './Header.scss';
+import {useSelector} from "react-redux";
 import {Link} from "react-router-dom";
+import {Profile} from "./Profile/Profile";
+import {Authentication} from "./ Authentication/ Authentication";
+import './Header.scss';
 
-const Header = () => {
+export const Header = () => {
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+
     return (
         <header className='header'>
             <div className='d-flex justify-content-between align-items-center'>
                 <Link to='/' className='header_logo'>Realworld Blog</Link>
-                <Authentication />
+                {isLoggedIn
+                    ? <Profile/>
+                    : <Authentication/>
+                }
             </div>
         </header>
     )
 }
-
-export default Header;

@@ -1,0 +1,17 @@
+.profile_settings {
+  margin-top: 34px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+
+  &_form {
+    background: #fff;
+    width: 384px;
+    padding: 48px 32px;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
