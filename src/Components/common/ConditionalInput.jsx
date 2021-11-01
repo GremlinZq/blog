@@ -1,7 +1,8 @@
 import React from "react";
 import {ErrorMessage} from "@hookform/error-message";
 
-const ConditionalInput = React.forwardRef(({value, index, errors, ...props}, ref) => {
+// eslint-disable-next-line react/prop-types
+export const ConditionalInput = React.forwardRef(({value, index, errors, ...props}, ref) => {
     const inputValue = typeof value === 'string' ? value : '';
 
     return <div style={{width: 300}}>
@@ -11,5 +12,3 @@ const ConditionalInput = React.forwardRef(({value, index, errors, ...props}, ref
                       render={({message}) => <div key={index} className='display-block errors'>{message}</div>}/>
     </div>
 });
-
-export default ConditionalInput;

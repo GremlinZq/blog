@@ -1,4 +1,4 @@
-import {articlesApi} from "../../api/api";
+import { articlesApi } from '../../api/api';
 
 const GET_ARTICLES = 'article/GET_ARTICLES';
 const GET_CURRENT_ARTICLE = 'article/GET_CURRENT_ARTICLE';
@@ -8,152 +8,187 @@ const SET_CURRENT_PAGE = 'articles/SET_CURRENT_PAGE';
 const SET_ARTICLES_COUNT = 'articles/SET_ARTICLES_COUNT';
 const SET_OPEN_ARTICLE = 'articles/SET_OPEN_ARTICLE';
 const SET_SUCCESSFUL_ARTICLE_CREATION = 'articles/SET_SUCCESSFUL_ARTICLE_CREATION';
+const SET_LIKE_ARTICLE = 'article/SET_LIKE_ARTICLE';
 
 const initialState = {
-    articles: [],
-    currentArticle: {},
-    articlesCount: 0,
-    isLoadingAllArticle: false,
-    isLoadingArticle: false,
-    currentPage: 1,
-    openArticle: false,
-    successfulArticleCreation: false
-}
+  articles: [],
+  currentArticle: {},
+  articlesCount: 0,
+  isLoadingAllArticle: false,
+  isLoadingArticle: false,
+  currentPage: 1,
+  openArticle: false,
+  successfulArticleCreation: false,
+};
 
 const articleReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case GET_ARTICLES:
+  switch (action.type) {
+    case GET_ARTICLES:
+      return {
+        ...state,
+        articles: [...action.articles],
+      };
+    case GET_CURRENT_ARTICLE:
+      return {
+        ...state,
+        currentArticle: {
+          ...state.currentArticle,
+          ...action.article,
+        },
+      };
+    case INSTALL_DOWNLOAD_ARTICLES:
+      return {
+        ...state,
+        isLoadingAllArticle: action.isLoadingAllArticle,
+      };
+    case INSTALL_DOWNLOAD_ARTICLE:
+      return {
+        ...state,
+        isLoadingArticle: action.isLoadingArticle,
+      };
+    case SET_CURRENT_PAGE:
+      return {
+        ...state,
+        currentPage: action.page,
+      };
+    case SET_ARTICLES_COUNT:
+      return {
+        ...state,
+        articlesCount: action.count,
+      };
+    case SET_OPEN_ARTICLE:
+      return {
+        ...state,
+        openArticle: action.openArticle,
+      };
+    case SET_SUCCESSFUL_ARTICLE_CREATION:
+      return {
+        ...state,
+        successfulArticleCreation: action.success,
+      };
+    case SET_LIKE_ARTICLE:
+      return {
+        ...state,
+        articles: [...state.articles.map(article => {
+          if (article.slug === action.slug) {
             return {
-                ...state,
-                articles: [...action.articles]
-            }
-        case GET_CURRENT_ARTICLE:
-            return {
-                ...state,
-                currentArticle: {
-                    ...state.currentArticle,
-                    ...action.article,
-                }
-            }
-        case INSTALL_DOWNLOAD_ARTICLES:
-            return {
-                ...state,
-                isLoadingAllArticle: action.isLoadingAllArticle,
-            }
-        case INSTALL_DOWNLOAD_ARTICLE:
-            return {
-                ...state,
-                isLoadingArticle: action.isLoadingArticle
-            }
-        case SET_CURRENT_PAGE:
-            return {
-                ...state,
-                currentPage: action.page,
-            }
-        case SET_ARTICLES_COUNT:
-            return {
-                ...state,
-                articlesCount: action.count,
-            }
-        case SET_OPEN_ARTICLE:
-            return {
-                ...state,
-                openArticle: action.openArticle,
-            }
-        case SET_SUCCESSFUL_ARTICLE_CREATION:
-            return {
-                ...state,
-                successfulArticleCreation: action.success
-            }
-        default:
-            return state
-    }
-}
+              ...article,
+              favorited: action.favorited,
+              favoritesCount: action.favoritesCount,
+            };
+          }
+          return article;
+        })],
+      };
+    default:
+      return state;
+  }
+};
 
-const setArticles = articles => ({type: GET_ARTICLES, articles})
-const setCurrentArticle = article => ({type: GET_CURRENT_ARTICLE, article})
-const setLoadingArticle = isLoadingArticle => ({type: INSTALL_DOWNLOAD_ARTICLE, isLoadingArticle})
-const setLoadingAllArticles = isLoadingAllArticle => ({type: INSTALL_DOWNLOAD_ARTICLES, isLoadingAllArticle})
-const setArticlesCount = count => ({type: SET_ARTICLES_COUNT, count})
-const successfulArticleCreation = success => ({type: SET_SUCCESSFUL_ARTICLE_CREATION, success});
+const setArticles = articles => ({ type: GET_ARTICLES, articles });
+const setCurrentArticle = article => ({ type: GET_CURRENT_ARTICLE, article });
+const setLoadingArticle = isLoadingArticle => ({ type: INSTALL_DOWNLOAD_ARTICLE, isLoadingArticle });
+const setLoadingAllArticles = isLoadingAllArticle => ({ type: INSTALL_DOWNLOAD_ARTICLES, isLoadingAllArticle });
+const setArticlesCount = count => ({ type: SET_ARTICLES_COUNT, count });
+const successfulArticleCreation = success => ({ type: SET_SUCCESSFUL_ARTICLE_CREATION, success });
+const setLikeArticle = (slug, favorited, favoritesCount) => ({
+  type: SET_LIKE_ARTICLE,
+  slug,
+  favorited,
+  favoritesCount,
+});
+export const setOpenArticle = openArticle => ({ type: SET_OPEN_ARTICLE, openArticle });
 
-export const setOpenArticle = openArticle => ({type : SET_OPEN_ARTICLE, openArticle})
-
-export const setCurrentPage = page => ({type: SET_CURRENT_PAGE, page})
+export const setCurrentPage = page => ({ type: SET_CURRENT_PAGE, page });
 
 export const getArticlesList = currentPage => async dispatch => {
-    try {
-        dispatch(setLoadingAllArticles(false))
+  try {
+    dispatch(setLoadingAllArticles(false));
 
-        const res = await articlesApi.getArticles(currentPage)
+    const res = await articlesApi.getArticles(currentPage);
 
-
-        if (res.status === 200) {
-            dispatch(setArticlesCount(res.data.articlesCount))
-            dispatch(setArticles(res.data.articles))
-            dispatch(setLoadingAllArticles(true))
-        }
-    } catch (err) {
-
+    if (res.status === 200) {
+      dispatch(setArticlesCount(res.data.articlesCount));
+      dispatch(setArticles(res.data.articles));
+      dispatch(setLoadingAllArticles(true));
     }
-}
+  } catch (err) {
+
+  }
+};
 
 export const getArticle = title => async dispatch => {
-    try {
-        dispatch(setLoadingArticle(false))
+  try {
+    dispatch(setLoadingArticle(false));
 
-        const res = await articlesApi.getCurrentArticle(title)
+    const res = await articlesApi.getCurrentArticle(title);
 
-        if (res.status === 200) {
-            dispatch(setCurrentArticle(res.data.article))
-            dispatch(setArticlesCount(res.data.articlesCount))
-            dispatch(setLoadingArticle(true))
-        }
-    } catch (err) {
-
+    if (res.status === 200) {
+      dispatch(setCurrentArticle(res.data.article));
+      dispatch(setArticlesCount(res.data.articlesCount));
+      dispatch(setLoadingArticle(true));
     }
-}
+  } catch (err) {
 
-export const createArticleCard = ({title, description, text, tags}, setError) => async dispatch => {
-    try {
-        const res = await articlesApi.createArticle(title, description, text, tags)
+  }
+};
 
-        if (res.status === 200) {
-            dispatch(successfulArticleCreation(true))
-        }
-        dispatch(successfulArticleCreation(false))
+export const createArticleCard = ({ title, description, text, tags }) => async dispatch => {
+  try {
+    const res = await articlesApi.createArticle(title, description, text, tags);
+
+    if (res.status === 200) {
+      dispatch(successfulArticleCreation(true));
     }
-    catch (err) {
+    dispatch(successfulArticleCreation(false));
+  } catch (err) {
 
-    }
-}
+  }
+};
 
 export const editArticleCard = (slug, values) => async dispatch => {
-    try {
-        const res = await articlesApi.editArticle(slug, values.title, values.description, values.body, values.tagList)
+  try {
+    const res = await articlesApi.editArticle(slug, values.title, values.description, values.body, values.tagList);
 
-        if(res.status === 200) {
-            dispatch(successfulArticleCreation(true))
-        }
-        dispatch(successfulArticleCreation(false))
+    if (res.status === 200) {
+      dispatch(successfulArticleCreation(true));
     }
-    catch(err) {
+    dispatch(successfulArticleCreation(false));
+  } catch (err) {
 
-    }
-}
+  }
+};
 
 export const deleteArticleCard = slug => async dispatch => {
-    try {
-        const res = await articlesApi.deleteArticle(slug)
+  try {
+    const res = await articlesApi.deleteArticle(slug);
 
-        if(res.status === 204) {
-            dispatch(successfulArticleCreation(true))
-        }
-        dispatch(successfulArticleCreation(false))
+    if (res.status === 204) {
+      dispatch(successfulArticleCreation(true));
     }
-    catch(err) {
+    dispatch(successfulArticleCreation(false));
+  } catch (err) {
 
-    }
-}
+  }
+};
+
+export const likeArticleCard = slug => async dispatch => {
+  try {
+    const res = await articlesApi.favoriteArticle(slug);
+    dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
+  } catch (err) {
+
+  }
+
+};
+
+export const dislikeArticleCard = slug => async dispatch => {
+  try {
+    const res = await articlesApi.unfavoredArticle(slug);
+    dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
+  } catch (err) {
+
+  }
+};
 
 export default articleReducer;

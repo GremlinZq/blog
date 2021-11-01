@@ -1,15 +1,15 @@
-import {ArticleForm} from "./ArticleForm";
-import {useHistory} from "react-router-dom";
-import {useEffect} from "react";
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { ArticleForm } from './ArticleForm';
 
 export const ArticleFormContainer = () => {
-    const history = useHistory();
+  const history = useHistory();
 
-    useEffect(() => {
-        if (history.location.pathname === '/new-article') {
-            history.replace('/new-article', null);
-        }
-    }, [history])
+  useEffect(() => {
+    if (history.location.pathname === '/new-article') {
+      history.replace('/new-article', null);
+    }
+  }, [history]);
 
-    return <ArticleForm {...history.location.state} />
-}
+  return <ArticleForm {...history.location.state} />;
+};
