@@ -44,19 +44,28 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
+// wqweASDASFFqw@bk.ru
+// 3213213214122124124325656
+
+// wqweASDASFFqw@bk.ru
+// 3213213214122124124325656
 const setUpdateAuthUser = user => ({ type: SET_UPDATE_AUTH_USER, user });
 const installEditedProfile = edited => ({ type: INSTALL_EDITED_PROFILE, edited });
 export const getLoggedIn = isLoggedIn => ({ type: GET_LOGGED_IN, isLoggedIn });
 
-export const requestUserRegister = (username, email, password) => async dispatch => {
+export const requestUserRegister = (username, email, password, setError) => async dispatch => {
   try {
     const res = await authApi.registerUser(username, email, password);
     if (res.status === 200) {
       dispatch(requestLogin(email, password));
     }
 
-  } catch (error) {
-
+  } catch (err) {
+    console.log(err.response);
+    setError('form', {
+      type: 'server',
+      message: Object.entries(err.response.data.errors).map(err => `${err[0]} ${err[1]}`),
+    });
   }
 };
 
@@ -82,11 +91,9 @@ export const requestLogin = (email, password, setError) => async dispatch => {
       dispatch(requestAuthUser());
     }
   } catch (err) {
-    dispatch(getLoggedIn(false));
-
     setError('form', {
       type: 'server',
-      message: err.response.data.errors['email or password'][0],
+      message: Object.entries(err.response.data.errors).map(err => `${err[0]} ${err[1]}`),
     });
   }
 };

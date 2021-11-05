@@ -19,7 +19,7 @@
 
     &_tags_list {
       display: flex;
-      justify-content: start;
+      justify-content: flex-start;
       flex-wrap: wrap;
       margin-bottom: 20px;
 
@@ -42,5 +42,4 @@
       height: 40px;
     }
   }
-
 }

@@ -179,7 +179,6 @@ export const likeArticleCard = slug => async dispatch => {
   } catch (err) {
 
   }
-
 };
 
 export const dislikeArticleCard = slug => async dispatch => {

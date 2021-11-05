@@ -37,10 +37,12 @@ const Registration = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CustomInput register={register} title='Username' name='username' errors={errors} placeholder='Username' />
+        <CustomInput register={register} title='Username' name='username' errors={errors}
+                     placeholder='Username' />
         <CustomInput register={register} title='Email address' name='email' errors={errors}
                      placeholder='Email address' />
-        <CustomInput register={register} title='Password' name='password' errors={errors} placeholder='Password' />
+        <CustomInput register={register} title='Password' name='password' errors={errors}
+                     placeholder='Password' />
         <CustomInput register={register} title='Repeat Password' name='repeatPassword' errors={errors}
                      placeholder='Password' />
         <hr />
@@ -63,6 +65,7 @@ const Registration = () => {
           </div>
         </div>
       </form>
+      <span><ErrorMessage errors={errors} name='form' /></span>
     </>
   );
 };
@@ -81,7 +84,8 @@ const Authorization = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CustomInput register={register} title='Email address' name='email' errors={errors}
                      placeholder='Email address' />
-        <CustomInput register={register} title='Password' name='password' errors={errors} placeholder='Password' />
+        <CustomInput register={register} title='Password' name='password' errors={errors}
+                     placeholder='Password' />
 
         <div className='create_account'>
           <button type='submit' className='btn btn-primary'>Login</button>
@@ -92,9 +96,10 @@ const Authorization = () => {
           </div>
         </div>
       </form>
-      <ErrorMessage errors={errors} name='form' />
+      <span><ErrorMessage errors={errors} name='form' /></span>
     </>
-  );
+  )
+    ;
 };
 
 export const Login = () => {

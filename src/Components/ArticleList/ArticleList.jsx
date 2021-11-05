@@ -4,7 +4,13 @@ import uniqueId from 'lodash.uniqueid';
 import { useDispatch, useSelector } from 'react-redux';
 import { getArticlesList, setCurrentPage } from '../../redux/reducers/article-reducer';
 import { ArticleListItem } from './ArticleListItem/ArticleListItem';
-import { getArticles, getArticlesCount, getCurrentPage, getIsLoadingAllArticle } from '../../redux/selectors/selectors';
+import {
+  getArticles,
+  getArticlesCount,
+  getCurrentPage,
+  getIsLoadingAllArticle,
+  getUserAuthorization,
+} from '../../redux/selectors/selectors';
 import './ArticleList.scss';
 
 export const ArticleList = () => {
@@ -12,13 +18,16 @@ export const ArticleList = () => {
   const isLoadingAllArticle = useSelector(getIsLoadingAllArticle);
   const currentPage = useSelector(getCurrentPage);
   const articlesCount = useSelector(getArticlesCount);
+  const isLoggedIn = useSelector(getUserAuthorization);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getArticlesList(currentPage));
-  }, [dispatch, currentPage]);
+    if (isLoggedIn) {
+      dispatch(getArticlesList(currentPage));
+    }
+  }, [isLoggedIn, dispatch, currentPage]);
 
-  const articlesList = articles.map((article, idx) => {
+  const articlesList = isLoggedIn && articles.map((article, idx) => {
     return <ArticleListItem tabIndex={idx} key={uniqueId('article-')}{...article} />;
   });
 

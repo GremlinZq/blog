@@ -5,21 +5,32 @@ const cookies = new Cookies();
 
 const instance = axios.create({
   baseURL: 'https://conduit.productionready.io/api/',
-  headers: {
-    'Authorization': `Token ${cookies.get('authToken') || ''}`,
-    'Content-Type': 'application/json',
-  },
 });
 
 export const articlesApi = {
-  getArticles: currentPage => instance.get(`articles?limit=5&offset=${currentPage * 5 - 5}`),
-  getCurrentArticle: title => instance.get(`articles/${title}`),
+  getArticles: currentPage => instance.get(`articles?limit=5&offset=${currentPage * 5 - 5}`, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
+    },
+  }),
+  getCurrentArticle: title => instance.get(`articles/${title}`, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
+    },
+  }),
   createArticle: (title, description, body, tagList) => instance.post('articles', {
     article: {
       title,
       description,
       body,
       tagList,
+    },
+  }, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
     },
   }),
   editArticle: (slug, title, description, body, tagList) => instance.put(`/articles/${slug}`, {
@@ -29,10 +40,27 @@ export const articlesApi = {
       body,
       tagList,
     },
+  }, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
+    },
   }),
-  deleteArticle: slug => instance.delete(`/articles/${slug}`),
-  favoriteArticle: slug => instance.post(`/articles/${slug}/favorite`),
-  unfavoredArticle: slug => instance.delete(`/articles/${slug}/favorite`),
+  deleteArticle: slug => instance.delete(`/articles/${slug}`, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+    },
+  }),
+  favoriteArticle: slug => instance.post(`/articles/${slug}/favorite`, null, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+    },
+  }),
+  unfavoredArticle: slug => instance.delete(`/articles/${slug}/favorite`, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+    },
+  }),
 };
 
 export const authApi = {
@@ -49,13 +77,23 @@ export const authApi = {
       password,
     },
   }),
-  authMe: () => instance.get('user'),
+  authMe: () => instance.get('user', {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
+    },
+  }),
   updateProfile: (username, email, password, image) => instance.put('user', {
     user: {
       username,
       email,
       password,
       image,
+    },
+  }, {
+    headers: {
+      'Authorization': `Token ${cookies.get('authToken')}`,
+      'Content-Type': 'application/json',
     },
   }),
 };

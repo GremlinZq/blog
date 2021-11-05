@@ -20,13 +20,14 @@
     }
   }
 
-  form {
+  span {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    color: red;
+  }
 
-    span {
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 22px;
-    }
+  form {
 
     input {
       display: block;
