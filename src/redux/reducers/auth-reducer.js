@@ -44,11 +44,6 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
-// wqweASDASFFqw@bk.ru
-// 3213213214122124124325656
-
-// wqweASDASFFqw@bk.ru
-// 3213213214122124124325656
 const setUpdateAuthUser = user => ({ type: SET_UPDATE_AUTH_USER, user });
 const installEditedProfile = edited => ({ type: INSTALL_EDITED_PROFILE, edited });
 export const getLoggedIn = isLoggedIn => ({ type: GET_LOGGED_IN, isLoggedIn });
@@ -59,9 +54,7 @@ export const requestUserRegister = (username, email, password, setError) => asyn
     if (res.status === 200) {
       dispatch(requestLogin(email, password));
     }
-
   } catch (err) {
-    console.log(err.response);
     setError('form', {
       type: 'server',
       message: Object.entries(err.response.data.errors).map(err => `${err[0]} ${err[1]}`),
@@ -109,7 +102,7 @@ export const requestAuthUser = () => async dispatch => {
       dispatch(setUpdateAuthUser(user));
     }
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 

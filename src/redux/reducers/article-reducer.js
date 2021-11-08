@@ -113,7 +113,7 @@ export const getArticlesList = currentPage => async dispatch => {
       dispatch(setLoadingAllArticles(true));
     }
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -129,7 +129,7 @@ export const getArticle = title => async dispatch => {
       dispatch(setLoadingArticle(true));
     }
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -142,7 +142,7 @@ export const createArticleCard = ({ title, description, text, tags }) => async d
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -155,7 +155,7 @@ export const editArticleCard = (slug, values) => async dispatch => {
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -168,7 +168,7 @@ export const deleteArticleCard = slug => async dispatch => {
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -177,7 +177,7 @@ export const likeArticleCard = slug => async dispatch => {
     const res = await articlesApi.favoriteArticle(slug);
     dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 
@@ -186,7 +186,7 @@ export const dislikeArticleCard = slug => async dispatch => {
     const res = await articlesApi.unfavoredArticle(slug);
     dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
   } catch (err) {
-
+    throw err.response.data;
   }
 };
 

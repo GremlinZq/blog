@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 import { CustomField } from '../../common/CustomField';
 import { getUpdatedProfile } from '../../../redux/reducers/auth-reducer';
 import './ProfileSettings.scss';
-import { getAuthUser, getProfileEdit } from '../../../redux/selectors/selectors';
+import { getAuthUser, getProfileEdit, getUserAuthorization } from '../../../redux/selectors/selectors';
 
 const schema = yup.object().shape({
   username: yup.string().min(3).max(20),
@@ -22,6 +22,7 @@ const Input = CustomField('input');
 export const ProfileSettingsForm = () => {
   const { email, username, image } = useSelector(getAuthUser);
   const profileEdited = useSelector(getProfileEdit);
+  const isLoggedIn = useSelector(getUserAuthorization)
   const dispatch = useDispatch();
   const { register, formState: { errors }, handleSubmit, setError } = useForm({
     resolver: yupResolver(schema),
@@ -32,7 +33,7 @@ export const ProfileSettingsForm = () => {
     dispatch(getUpdatedProfile(values, setError));
   };
 
-  if (profileEdited) {
+  if (profileEdited || !isLoggedIn) {
     return <Redirect to='/' />;
   }
 

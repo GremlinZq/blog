@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { CustomField } from '../common/CustomField';
 import { ConditionalInput } from '../common/ConditionalInput';
 import { createArticleCard, editArticleCard } from '../../redux/reducers/article-reducer';
-import { getSuccessfulArticleCreation } from '../../redux/selectors/selectors';
+import { getSuccessfulArticleCreation, getUserAuthorization } from '../../redux/selectors/selectors';
 import './ArticleForm.scss';
 
 const schema = yup.object().shape({
@@ -24,6 +24,7 @@ const CustomTextArea = CustomField('textarea');
 export const ArticleForm = (props) => {
   const { slug, tagList, title, description, body } = props;
   const successfulArticleCreation = useSelector(getSuccessfulArticleCreation);
+  const isLoggedIn = useSelector(getUserAuthorization)
   const history = useHistory();
   const heading = history.location.pathname === '/new-article' ? 'Create new article' : 'Edit article';
   const buttonText = history.location.pathname === '/new-article' ? 'Send' : 'Edit';
@@ -59,7 +60,7 @@ export const ArticleForm = (props) => {
     };
   });
 
-  if (successfulArticleCreation) {
+  if (successfulArticleCreation || !isLoggedIn) {
     return <Redirect to='/' />;
   }
 

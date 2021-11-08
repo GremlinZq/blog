@@ -11,12 +11,12 @@ export const Profile = () => {
   return (
     <div>
       <div className='profile'>
-        <Link to='/new-article'>Create article</Link>
+        <Link to='/new-article' type="button" className="btn btn-outline-success">Create article</Link>
         <Link to='/profile'>
           <span>{username}</span>
           <img src={image || `https://www.file-extension.info/images/resource/formats/img.png`} alt='img' />
         </Link>
-        <button type='button' onClick={() => dispatch(logOut())}>Log Out</button>
+        <button type='button' onClick={() => dispatch(logOut())} className='btn btn-outline-secondary'>Log Out</button>
       </div>
     </div>
   );

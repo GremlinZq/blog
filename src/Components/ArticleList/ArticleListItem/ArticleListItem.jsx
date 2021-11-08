@@ -33,7 +33,7 @@ export const ArticleListItem = (props) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const successfulArticleCreation = useSelector(getSuccessfulArticleCreation);
-
+  const [like, setLike] = useState(favorited);
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -47,18 +47,18 @@ export const ArticleListItem = (props) => {
     setIsModalVisible(false);
   };
 
-  if (successfulArticleCreation) {
-    return <Redirect to='/' />;
-  }
-
   const rateArticle = () => {
+    setLike(!like);
     if (favorited) {
       dispatch(dislikeArticleCard(slug));
     } else {
       dispatch(likeArticleCard(slug));
     }
-
   };
+
+  if (successfulArticleCreation) {
+    return <Redirect to='/' />;
+  }
 
   return (
     <li className='article_list_item'>
@@ -68,7 +68,7 @@ export const ArticleListItem = (props) => {
             <span className='description'>{title}</span>
           </Link>
           <button type='button' disabled={!isLoggedIn}>
-            <HeartTwoTone twoToneColor={favorited ? 'red' : `#b4b4b4`} onClick={rateArticle} />
+            <HeartTwoTone twoToneColor={like ? 'red' : `#b4b4b4`} onClick={rateArticle} />
           </button>
           <span className='article_list_item-count'>{favoritesCount}</span>
         </div>
@@ -90,25 +90,21 @@ export const ArticleListItem = (props) => {
         <span>{description}</span>
       </div>
       {openArticle &&
-      <>
-        <div className='d-flex justify-content-between'>
-          <div>
-            <ReactMarkdown>{body}</ReactMarkdown>
-          </div>
-          {isLoggedIn &&
-          <div style={{ position: 'relative' }}>
+      <div className='body d-flex justify-content-between'>
+        <div><ReactMarkdown>{body}</ReactMarkdown></div>
+        {isLoggedIn &&
 
-            <button onClick={showModal} type='button' className='btn btn-outline-danger'>Delete</button>
-            <Modal style={{ position: 'absolute', right: 0 }} width='250px' visible={isModalVisible} onOk={handleOk}
-                   onCancel={handleCancel}>
-              <p style={{ margin: 0 }}>Are you sure to delete this article?</p>
-            </Modal>
-            <button onClick={editHandle} type='button' className='btn btn-outline-success mx-3'>Edit
-            </button>
-          </div>
-          }
+        <div style={{ position: 'relative' }} className='d-flex'>
+
+          <button onClick={showModal} type='button' className='btn btn-outline-danger'>Delete</button>
+          <Modal style={{ position: 'absolute', right: 0 }} width='250px' visible={isModalVisible} onOk={handleOk}
+                 onCancel={handleCancel}>
+            <p style={{ margin: 0 }}>Are you sure to delete this article?</p>
+          </Modal>
+          <button onClick={editHandle} type='button' className='btn btn-outline-success mx-3'>Edit</button>
         </div>
-      </>
+        }
+      </div>
       }
     </li>
   );

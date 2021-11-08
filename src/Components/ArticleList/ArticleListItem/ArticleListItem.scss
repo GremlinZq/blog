@@ -6,6 +6,17 @@
   list-style-type: none;
   margin-bottom: 23px;
 
+  .body {
+    button {
+      width: auto;
+      height: 46px;
+    }
+  }
+
+  img {
+    border-radius: 50%;
+  }
+
   &-title {
     font-size: 20px;
     font-weight: 400;
