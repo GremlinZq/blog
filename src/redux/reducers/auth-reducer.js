@@ -70,7 +70,7 @@ export const logOut = () => dispatch => {
 export const requestLogin = (email, password, setError) => async dispatch => {
   try {
       const res = await authApi.login(email, password);
-    
+
     if (res.status === 200) {
       dispatch(getLoggedIn(true));
 
@@ -85,7 +85,6 @@ export const requestLogin = (email, password, setError) => async dispatch => {
       dispatch(requestAuthUser());
     }
   } catch (err) {
-    console.log(err.response);
     setError('form', {
       type: 'server',
       message: Object.entries(err.response.data.errors).map(err => `${err[0]} ${err[1]}`),
