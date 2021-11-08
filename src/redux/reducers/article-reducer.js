@@ -142,7 +142,8 @@ export const createArticleCard = ({ title, description, text, tags }) => async d
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-    throw err.response.data;
+    console.log(err.response);
+    // throw err.response.data;
   }
 };
 
@@ -177,7 +178,7 @@ export const likeArticleCard = slug => async dispatch => {
     const res = await articlesApi.favoriteArticle(slug);
     dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
   } catch (err) {
-    throw err.response.data;
+    // throw err.response.data;
   }
 };
 

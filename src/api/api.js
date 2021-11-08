@@ -92,7 +92,6 @@ export const authApi = {
   }, {
     headers: {
       'Authorization': `Token ${cookies.get('authToken')}`,
-      'Content-Type': 'application/json',
     },
   }),
 };
