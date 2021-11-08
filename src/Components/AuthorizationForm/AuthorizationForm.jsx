@@ -65,7 +65,7 @@ const Registration = () => {
           </div>
         </div>
       </form>
-      <span><ErrorMessage errors={errors} name='form' /></span>
+      <span className='errors'><ErrorMessage errors={errors} name='form' /></span>
     </>
   );
 };
@@ -96,10 +96,9 @@ const Authorization = () => {
           </div>
         </div>
       </form>
-      <span><ErrorMessage errors={errors} name='form' /></span>
+      <span className='errors'><ErrorMessage errors={errors} name='form' /></span>
     </>
-  )
-    ;
+  );
 };
 
 export const Login = () => {
