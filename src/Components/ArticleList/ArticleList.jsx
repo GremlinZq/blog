@@ -35,7 +35,7 @@ export const ArticleList = () => {
     <div className='container'>
       <div className='row'>
         <ul className='article_list'>
-          {!isLoadingAllArticle
+          {!isLoadingAllArticle && isLoggedIn
             ? <Spin className='d-flex justify-content-center align-items-center mb-3' />
             : articlesList
           }

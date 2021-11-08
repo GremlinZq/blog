@@ -80,7 +80,6 @@ export const authApi = {
   authMe: () => instance.get('user', {
     headers: {
       'Authorization': `Token ${cookies.get('authToken')}`,
-      'Content-Type': 'application/json',
     },
   }),
   updateProfile: (username, email, password, image) => instance.put('user', {
