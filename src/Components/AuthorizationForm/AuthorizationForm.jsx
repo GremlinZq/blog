@@ -7,9 +7,9 @@ import { Link, Redirect, useLocation } from 'react-router-dom';
 import { ErrorMessage } from '@hookform/error-message';
 import { CustomField } from '../common/CustomField';
 import { requestLogin, requestUserRegister } from '../../redux/reducers/auth-reducer';
-import { ARTICLE_LIST_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts';
-import './AuthorizationForm.scss';
 import { getUserAuthorization } from '../../redux/selectors/selectors';
+import { ARTICLE_LIST_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from '../constants/constants';
+import './AuthorizationForm.scss';
 
 const schema = yup.object().shape({
   username: yup.string().min(3).max(20),
@@ -28,40 +28,27 @@ const Registration = () => {
   });
   const dispatch = useDispatch();
 
-  const onSubmit = ({
-                      username,
-                      email,
-                      password,
-                    }) => dispatch(requestUserRegister(username, email, password, setError));
+  const onSubmit = ({ username, email, password, }) => dispatch(requestUserRegister(username, email, password, setError));
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CustomInput register={register} title='Username' name='username' errors={errors}
-                     placeholder='Username' />
-        <CustomInput register={register} title='Email address' name='email' errors={errors}
-                     placeholder='Email address' />
-        <CustomInput register={register} title='Password' name='password' errors={errors}
-                     placeholder='Password' />
-        <CustomInput register={register} title='Repeat Password' name='repeatPassword' errors={errors}
-                     placeholder='Password' />
+        <CustomInput register={register} title='Username' name='username' errors={errors} placeholder='Username' />
+        <CustomInput register={register} title='Email address' name='email' errors={errors} placeholder='Email address' />
+        <CustomInput register={register} title='Password' name='password' errors={errors} placeholder='Password' />
+        <CustomInput register={register} title='Repeat Password' name='repeatPassword' errors={errors} placeholder='Password' />
         <hr />
-
         <label>
           <input {...register('processingPersonalData')} type='checkbox' />
           <span>I agree to the processing of my personal information</span>
         </label>
-
         <div className='errors mb-2'>
           <ErrorMessage errors={errors} name='processingPersonalData' />
         </div>
-
         <div className='create_account'>
           <button type='submit' className='btn btn-primary'>Create</button>
           <div className='create_account-text'>Already have an account?
-            <span>
-                            <Link to={LOGIN_ROUTE}>Sign In</Link>
-                        </span>
+            <span><Link to={LOGIN_ROUTE}>Sign In</Link></span>
           </div>
         </div>
       </form>
@@ -82,17 +69,13 @@ const Authorization = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CustomInput register={register} title='Email address' name='email' errors={errors}
-                     placeholder='Email address' />
-        <CustomInput register={register} title='Password' name='password' errors={errors}
-                     placeholder='Password' />
+        <CustomInput register={register} title='Email address' name='email' errors={errors} placeholder='Email address' />
+        <CustomInput register={register} title='Password' name='password' errors={errors} placeholder='Password' />
 
         <div className='create_account'>
           <button type='submit' className='btn btn-primary'>Login</button>
           <div className='create_account-text'>Don’t have an account?
-            <span>
-                        <Link to={REGISTRATION_ROUTE}>Sign Up.</Link>
-                    </span>
+            <span><Link to={REGISTRATION_ROUTE}>Sign Up.</Link></span>
           </div>
         </div>
       </form>

@@ -1,9 +1,6 @@
 import Cookies from 'universal-cookie';
 import { authApi } from '../../api/api';
-
-const SET_UPDATE_AUTH_USER = 'auth/SET_UPDATE_AUTH_USER';
-const GET_LOGGED_IN = 'auth/GET_LOGGED_IN';
-const INSTALL_EDITED_PROFILE = 'auth/INSTALL_EDITED_PROFILE';
+import { GET_LOGGED_IN, INSTALL_EDITED_PROFILE, SET_UPDATE_AUTH_USER } from '../constants/constants';
 
 const cookies = new Cookies();
 

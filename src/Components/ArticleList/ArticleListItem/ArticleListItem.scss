@@ -6,15 +6,10 @@
   list-style-type: none;
   margin-bottom: 23px;
 
-  .body {
-    button {
-      width: auto;
-      height: 46px;
-    }
-  }
-
   img {
     border-radius: 50%;
+    width: 50px;
+    height: 50px;
   }
 
   &-title {
@@ -92,6 +87,18 @@
       font-size: 12px;
       font-weight: 400;
       color: rgba(0, 0, 0, 0.75);
+    }
+  }
+  .body {
+    .buttons {
+      position: relative;
+    }
+    button {
+      height: 46px;
+    }
+
+    p {
+      margin: 0
     }
   }
 }

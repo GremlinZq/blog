@@ -8,8 +8,6 @@ export const CustomField = Element => ({ register, title, name, errors, ...rest 
     <div className='field__group_heading'>{title}</div>
     <Element {...rest} {...register(name)} />
 
-    <span>
-            <ErrorMessage errors={errors} name={name} />
-        </span>
+    <span><ErrorMessage errors={errors} name={name} /></span>
   </div>
 );

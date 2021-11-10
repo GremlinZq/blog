@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Spin } from 'antd';
 import 'antd/dist/antd.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeApplication } from '../redux/reducers/app-reducer';
-import { getApplicationInitialized } from '../redux/selectors/selectors';
-import { Header } from '../Components/Header/Header';
-import Routes from '../routes/Routes';
+import { initializeApplication } from '../../redux/reducers/app-reducer';
+import { getApplicationInitialized } from '../../redux/selectors/selectors';
+import { Header } from '../Header/Header';
+import Routes from '../Routes/Routes';
 import './App.scss';
 
 export const App = () => {

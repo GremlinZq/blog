@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../../../utils/consts';
+import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../../constants/constants';
 import './Authentication.scss';
 
 export const Authentication = () => (

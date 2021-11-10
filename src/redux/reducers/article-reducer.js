@@ -1,14 +1,15 @@
 import { articlesApi } from '../../api/api';
-
-const GET_ARTICLES = 'article/GET_ARTICLES';
-const GET_CURRENT_ARTICLE = 'article/GET_CURRENT_ARTICLE';
-const INSTALL_DOWNLOAD_ARTICLE = 'article/INSTALL DOWNLOAD ARTICLE';
-const INSTALL_DOWNLOAD_ARTICLES = 'article/INSTALL_DOWNLOAD_ARTICLES';
-const SET_CURRENT_PAGE = 'articles/SET_CURRENT_PAGE';
-const SET_ARTICLES_COUNT = 'articles/SET_ARTICLES_COUNT';
-const SET_OPEN_ARTICLE = 'articles/SET_OPEN_ARTICLE';
-const SET_SUCCESSFUL_ARTICLE_CREATION = 'articles/SET_SUCCESSFUL_ARTICLE_CREATION';
-const SET_LIKE_ARTICLE = 'article/SET_LIKE_ARTICLE';
+import {
+  GET_ARTICLES,
+  GET_CURRENT_ARTICLE,
+  INSTALL_DOWNLOAD_ARTICLE,
+  INSTALL_DOWNLOAD_ARTICLES,
+  SET_ARTICLES_COUNT,
+  SET_CURRENT_PAGE,
+  SET_LIKE_ARTICLE,
+  SET_OPEN_ARTICLE,
+  SET_SUCCESSFUL_ARTICLE_CREATION,
+} from '../constants/constants';
 
 const initialState = {
   articles: [],
@@ -142,8 +143,7 @@ export const createArticleCard = ({ title, description, text, tags }) => async d
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-    console.log(err.response);
-    // throw err.response.data;
+    throw err.response.data;
   }
 };
 
@@ -178,7 +178,7 @@ export const likeArticleCard = slug => async dispatch => {
     const res = await articlesApi.favoriteArticle(slug);
     dispatch(setLikeArticle(slug, res.data.article.favorited, res.data.article.favoritesCount));
   } catch (err) {
-    // throw err.response.data;
+    throw err.response.data;
   }
 };
 

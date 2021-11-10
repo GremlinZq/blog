@@ -43,8 +43,7 @@ export const ArticleList = () => {
         <div className='pagination d-flex justify-content-center align-items-center mb-3'>
           <Pagination size='small' defaultCurrent={currentPage} pageSize={5} total={articlesCount}
                       onChange={(page) => dispatch(setCurrentPage(page))}
-                      disabled={articlesCount <= 5}
-          />
+                      disabled={articlesCount <= 5} />
         </div>
       </div>
     </div>

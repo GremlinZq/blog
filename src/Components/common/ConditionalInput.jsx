@@ -7,8 +7,6 @@ export const ConditionalInput = React.forwardRef(({value, index, errors, ...prop
 
     return <div style={{width: 300}}>
         <input ref={ref} {...props} value={inputValue}/>
-
-        <ErrorMessage errors={errors} name={`tags[${index}]`}
-                      render={({message}) => <div key={index} className='display-block errors'>{message}</div>}/>
+        <ErrorMessage errors={errors} name={`tags[${index}]`} render={({message}) => <div key={index} className='display-block errors'>{message}</div>}/>
     </div>
 });

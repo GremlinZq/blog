@@ -13,23 +13,10 @@ import './ArticleListItem.scss';
 import { getSuccessfulArticleCreation } from '../../../redux/selectors/selectors';
 
 export const ArticleListItem = (props) => {
-  const {
-    slug, title, isLoggedIn, author, createdAt, tagList, description, openArticle, body, favorited, favoritesCount,
-  } = props;
+  const { slug, title, isLoggedIn, author, createdAt, tagList, description, openArticle, body, favorited, favoritesCount, } = props;
   const history = useHistory();
   const dispatch = useDispatch();
-  const editHandle = () => history.push('edit', {
-    slug,
-    title,
-    isLoggedIn,
-    author,
-    createdAt,
-    tagList,
-    description,
-    favorited,
-    favoritesCount,
-    body,
-  });
+  const editHandle = () => history.push('edit', { slug, title, isLoggedIn, author, createdAt, tagList, description, favorited, favoritesCount, body, });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const successfulArticleCreation = useSelector(getSuccessfulArticleCreation);
@@ -78,13 +65,12 @@ export const ArticleListItem = (props) => {
             <div>{author.username}<span>{format(new Date(createdAt), 'MMMM d, yyyy')}</span>
             </div>
           </div>
-          <img style={{ width: 50, height: 50 }} src={author.image || Logo} alt='' />
+          <img src={author.image || Logo} alt='' />
         </div>
       </div>
 
       <ul className='article_list_item-tags d-flex flex-wrap'>
-        {tagList.map(tag => <li key={uniqueId('tag-')}
-                                className='article_list_item-tags-item'>{tag}</li>)}
+        {tagList.map(tag => <li key={uniqueId('tag-')} className='article_list_item-tags-item'>{tag}</li>)}
       </ul>
       <div className='article_list_item-text'>
         <span>{description}</span>
@@ -94,12 +80,10 @@ export const ArticleListItem = (props) => {
         <div><ReactMarkdown>{body}</ReactMarkdown></div>
         {isLoggedIn &&
 
-        <div style={{ position: 'relative' }} className='d-flex'>
-
+        <div className='body__buttons d-flex'>
           <button onClick={showModal} type='button' className='btn btn-outline-danger'>Delete</button>
-          <Modal style={{ position: 'absolute', right: 0 }} width='250px' visible={isModalVisible} onOk={handleOk}
-                 onCancel={handleCancel}>
-            <p style={{ margin: 0 }}>Are you sure to delete this article?</p>
+          <Modal style={{ position: 'absolute', right: 0 }} width='250px' visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Are you sure to delete this article?</p>
           </Modal>
           <button onClick={editHandle} type='button' className='btn btn-outline-success mx-3'>Edit</button>
         </div>

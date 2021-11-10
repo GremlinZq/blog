@@ -1,9 +1,8 @@
 import Cookies from 'universal-cookie';
 import { requestAuthUser } from './auth-reducer';
+import { INITIALIZED_SUCCESS } from '../constants/constants';
 
 const cookies = new Cookies();
-
-const INITIALIZED_SUCCESS = 'INITIALIZED_SUCCESS';
 
 const initialState = {
   applicationInitialized: false,
@@ -21,14 +20,13 @@ const appReducer = (state = initialState, action) => {
   }
 };
 
-const initializedSuccess = initialized => ({ type: INITIALIZED_SUCCESS, initialized });
+const applicationInitialized = initialized => ({ type: INITIALIZED_SUCCESS, initialized });
 
 export const initializeApplication = () => async dispatch => {
   if (cookies.get('authToken')) {
-    dispatch(requestAuthUser());
+    await dispatch(requestAuthUser());
   }
-
-  dispatch(initializedSuccess(true));
+  dispatch(applicationInitialized(true));
 };
 
 export default appReducer;
