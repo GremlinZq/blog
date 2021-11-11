@@ -1,12 +1,14 @@
-import React from "react";
-import {ErrorMessage} from "@hookform/error-message";
+import React from 'react';
 
-// eslint-disable-next-line react/prop-types
-export const ConditionalInput = React.forwardRef(({value, index, errors, ...props}, ref) => {
+export const ConditionalInput = React.forwardRef((props, ref) => {
+  // eslint-disable-next-line react/prop-types
+    const {value} = props;
+
     const inputValue = typeof value === 'string' ? value : '';
 
-    return <div style={{width: 300}}>
-        <input ref={ref} {...props} value={inputValue}/>
-        <ErrorMessage errors={errors} name={`tags[${index}]`} render={({message}) => <div key={index} className='display-block errors'>{message}</div>}/>
-    </div>
-});
+    return (
+      <div className="group" >
+        <input  {...props} value={inputValue} ref={ref} />
+      </div>
+    )
+})

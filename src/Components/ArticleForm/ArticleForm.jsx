@@ -1,27 +1,28 @@
-import React, { useCallback } from 'react';
-import * as yup from 'yup';
-import { useForm, Controller, useFieldArray, useFormState } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import React from 'react';
+import { useForm, Controller, useFieldArray, } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import  { ConditionalInput } from '../common/ConditionalInput';
 import { CustomField } from '../common/CustomField';
-import { ConditionalInput } from '../common/ConditionalInput';
 import { createArticleCard, editArticleCard } from '../../redux/reducers/article-reducer';
 import { getSuccessfulArticleCreation, getUserAuthorization } from '../../redux/selectors/selectors';
 import './ArticleForm.scss';
 
-const schema = yup.object().shape({
-  tags: yup.array().of(yup.string().min(1)),
-  title: yup.string().min(3).max(20),
-  description: yup.string().min(3).max(20),
-  text: yup.string().required(),
-});
 
-const CustomInput = CustomField('input');
+const CustomInput = CustomField('input')
 const CustomTextArea = CustomField('textarea');
 
 export const ArticleForm = (props) => {
+  const schema = yup.object().shape({
+    tagList: yup.array().of(yup.string().min(1)),
+    title: yup.string().min(3).max(20),
+    description: yup.string().min(3).max(20),
+    body: yup.string().required(),
+  });
+
   const { slug, tagList, title, description, body } = props;
   const successfulArticleCreation = useSelector(getSuccessfulArticleCreation);
   const isLoggedIn = useSelector(getUserAuthorization)
@@ -30,32 +31,32 @@ export const ArticleForm = (props) => {
   const buttonText = history.location.pathname === '/new-article' ? 'Send' : 'Edit';
   const dispatch = useDispatch();
 
-  const { register, handleSubmit, formState: { errors }, setError, control, watch } = useForm({
+  const {  handleSubmit, register, formState: { errors, }, setError, control, watch } = useForm({
     defaultValues: {
-      tags: tagList || [],
+      tagList,
+      title,
+      description,
+      body,
     },
     resolver: yupResolver(schema),
     mode: 'onTouched',
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {fields, append, remove} = useFieldArray({
     control,
-    name: 'tags',
+    name: "tag",
   });
 
-  const { isValid } = useFormState({
-    control
-  });
+  const watchFieldArray = watch('tag');
 
-  const onSubmit = useCallback((values) => {
-    if (history.location.pathname === '/new-article') {
-      dispatch(createArticleCard(values, setError));
-    } else {
-      dispatch(editArticleCard(slug, values, setError));
-    }
-  }, [slug, history, dispatch, setError]);
-
-  const watchFieldArray = watch('tags');
+  const onSubmit = (values) => {
+    console.log(values);
+    // if ( history.location.pathname === '/new-article') {
+    //   dispatch(createArticleCard(values, setError))
+    // } else {
+    //   dispatch(editArticleCard(slug, values, setError));
+    // }
+  }
 
   const controlledFields = fields.map((field, index) => {
     return {
@@ -73,24 +74,23 @@ export const ArticleForm = (props) => {
       <div className='article__form_content container'>
         <div className='article__form_content-heading'>{heading}</div>
         <form id='article__form_edit' onSubmit={handleSubmit(onSubmit)}>
-          <CustomInput register={register} errors={errors} title='Title' placeholder='Title' defaultValue={title} name='title' />
-          <CustomInput register={register} errors={errors} title='Short description' defaultValue={description} placeholder='Title' name='description' />
-          <CustomTextArea register={register} defaultValue={body} errors={errors} title='Text' placeholder='Text' name='text' />
-          <span>Tags</span>
-          <div className='article__form_content_tags_list' onSubmit={handleSubmit(onSubmit)}>
+          <CustomInput register={register} errors={errors} title='Title' placeholder='Title' value={watch("title")} name='title' />
+          <CustomInput register={register} errors={errors} title='Short description' value={watch("description")} placeholder='Title' name='description' />
+          <CustomTextArea register={register} value={watch("body")} errors={errors} title='Text' placeholder='Text' name='body' />
+          <div className="tags">
             <ul>
               {controlledFields.map((field, index) => {
                   return (
                     <li className='article__form_content_tags_list-item  d-flex flex-wrap' key={field.id}>
-                      <Controller name={`tags[${index}]`} control={control} render={({ field }) =>
-                          <ConditionalInput
-                            {...field}
-                            name={`tags[${index}]`}
-                            index={index}
-                            placeholder='Tag'
-                            errors={errors}
-                          />
-                        }
+                      <Controller name={`tagList.${index}`} control={control} render={({ field }) => {
+                        // console.log(field);
+                        return <ConditionalInput
+                          {...field}
+                          name={`tagList.${index}.tagInput`}
+                          placeholder='Tag'
+                          error={errors[`tagList.${index}.tagInput`]}
+                        />
+                      }}
                       />
                       <button className='btn btn-outline-danger' type='button' onClick={() => remove(index)}>Delete</button>
                     </li>
@@ -102,7 +102,8 @@ export const ArticleForm = (props) => {
               <button className=' btn btn-outline-info' type='button' onClick={() => append({})}>Add tag</button>
             </div>
           </div>
-          <button className='article__form_content_send_btn btn btn-primary' disabled={!isValid} type='submit'>{buttonText}</button>
+
+          <button className='article__form_content_send_btn btn btn-primary' type='submit'>{buttonText}</button>
         </form>
       </div>
     </div>
