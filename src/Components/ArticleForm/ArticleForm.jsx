@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm, Controller, useFieldArray, } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useController } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -11,13 +11,11 @@ import { createArticleCard, editArticleCard } from '../../redux/reducers/article
 import { getSuccessfulArticleCreation, getUserAuthorization } from '../../redux/selectors/selectors';
 import './ArticleForm.scss';
 
-
 const CustomInput = CustomField('input')
 const CustomTextArea = CustomField('textarea');
 
 export const ArticleForm = (props) => {
   const schema = yup.object().shape({
-    tagList: yup.array().of(yup.string().min(1)),
     title: yup.string().min(3).max(20),
     description: yup.string().min(3).max(20),
     body: yup.string().required(),
@@ -31,12 +29,24 @@ export const ArticleForm = (props) => {
   const buttonText = history.location.pathname === '/new-article' ? 'Send' : 'Edit';
   const dispatch = useDispatch();
 
+  function formatTags(tagList) {
+    return tagList.reduce(
+      (acc, tag) => {
+        acc.push({ name: tag });
+        return acc;
+      },
+      []
+    );
+  }
+
+  const defValue = formatTags(tagList);
+
   const {  handleSubmit, register, formState: { errors, }, setError, control, watch } = useForm({
     defaultValues: {
-      tagList,
+      tagList: defValue,
       title,
       description,
-      body,
+      body
     },
     resolver: yupResolver(schema),
     mode: 'onTouched',
@@ -44,19 +54,10 @@ export const ArticleForm = (props) => {
 
   const {fields, append, remove} = useFieldArray({
     control,
-    name: "tag",
+    name: "tagList",
   });
-
-  const watchFieldArray = watch('tag');
 
   const onSubmit = (values) => history.location.pathname === '/new-article' ? dispatch(createArticleCard(values, setError)) : dispatch(editArticleCard(slug, values, setError));
-
-  const controlledFields = fields.map((field, index) => {
-    return {
-      ...field,
-      ...watchFieldArray[index],
-    };
-  });
 
   if (successfulArticleCreation || !isLoggedIn) {
     return <Redirect to='/' />;
@@ -72,27 +73,20 @@ export const ArticleForm = (props) => {
           <CustomTextArea register={register} value={watch("body")} errors={errors} title='Text' placeholder='Text' name='body' />
           <div className="tags">
             <ul>
-              {controlledFields.map((field, index) => {
+              {!fields.length &&
+              <button onClick={() => append({})} type="button">Add tag</button>}
+              {fields.map((field, index) => {
                   return (
                     <li className='article__form_content_tags_list-item  d-flex flex-wrap' key={field.id}>
-                      <Controller name={`tagList.${index}`} control={control} render={({ field }) => {
-                        return <ConditionalInput
-                          {...field}
-                          name={`tagList.${index}.tagInput`}
-                          placeholder='Tag'
-                          error={errors[`tagList.${index}.tagInput`]}
-                        />
-                      }}
-                      />
-                      <button className='btn btn-outline-danger' type='button' onClick={() => remove(index)}>Delete</button>
+                      <ConditionalInput control={control} name={`tagList.${index}.name`} />
+                      <button type="button" onClick={() => remove(index)}>Delete</button>
+                      {index === fields.length - 1 &&
+                      <button onClick={() => append({name: ''})} type="button">Add tag</button>}
                     </li>
                   );
                 },
               )}
             </ul>
-            <div className='d-flex align-items-end'>
-              <button className=' btn btn-outline-info' type='button' onClick={() => append({})}>Add tag</button>
-            </div>
           </div>
 
           <button className='article__form_content_send_btn btn btn-primary' type='submit'>{buttonText}</button>

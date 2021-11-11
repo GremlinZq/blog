@@ -134,9 +134,9 @@ export const getArticle = title => async dispatch => {
   }
 };
 
-export const createArticleCard = ({ title, description, text, tags }) => async dispatch => {
+export const createArticleCard = ({tagList, body, description, title}) => async dispatch => {
   try {
-    const res = await articlesApi.createArticle(title, description, text, tags);
+    const res = await articlesApi.createArticle(title, description, body, tagList);
 
     if (res.status === 200) {
       dispatch(successfulArticleCreation(true));

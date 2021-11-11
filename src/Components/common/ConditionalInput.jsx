@@ -1,14 +1,22 @@
 import React from 'react';
+import { useController } from 'react-hook-form';
 
-export const ConditionalInput = React.forwardRef((props, ref) => {
-  // eslint-disable-next-line react/prop-types
-    const {value} = props;
-
-    const inputValue = typeof value === 'string' ? value : '';
-
-    return (
-      <div className="group" >
-        <input  {...props} value={inputValue} ref={ref} />
-      </div>
-    )
+export const ConditionalInput = ((props) => {
+  const {
+    field: { ref, ...inputProps },
+    fieldState: { invalid, isTouched, isDirty },
+    formState: { touchedFields, dirtyFields }
+  } = useController({
+    // eslint-disable-next-line react/prop-types,react/destructuring-assignment
+    name: props.name,
+    // eslint-disable-next-line react/prop-types,react/destructuring-assignment
+    control: props.control,
+    rules: { required: true },
+    defaultValue:  '',
+  });
+  return (
+    <div className="group" >
+      <input {...inputProps} />
+    </div>
+  )
 })
