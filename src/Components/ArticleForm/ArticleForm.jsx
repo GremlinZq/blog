@@ -49,14 +49,7 @@ export const ArticleForm = (props) => {
 
   const watchFieldArray = watch('tag');
 
-  const onSubmit = (values) => {
-    console.log(values);
-    // if ( history.location.pathname === '/new-article') {
-    //   dispatch(createArticleCard(values, setError))
-    // } else {
-    //   dispatch(editArticleCard(slug, values, setError));
-    // }
-  }
+  const onSubmit = (values) => history.location.pathname === '/new-article' ? dispatch(createArticleCard(values, setError)) : dispatch(editArticleCard(slug, values, setError));
 
   const controlledFields = fields.map((field, index) => {
     return {
