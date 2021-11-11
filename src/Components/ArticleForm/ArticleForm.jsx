@@ -76,7 +76,6 @@ export const ArticleForm = (props) => {
                   return (
                     <li className='article__form_content_tags_list-item  d-flex flex-wrap' key={field.id}>
                       <Controller name={`tagList.${index}`} control={control} render={({ field }) => {
-                        // console.log(field);
                         return <ConditionalInput
                           {...field}
                           name={`tagList.${index}.tagInput`}
