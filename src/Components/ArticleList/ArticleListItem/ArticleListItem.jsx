@@ -9,11 +9,12 @@ import { format } from 'date-fns';
 import uniqueId from 'lodash.uniqueid';
 import { deleteArticleCard, dislikeArticleCard, likeArticleCard } from '../../../redux/reducers/article-reducer';
 import Logo from '../Rectangle 1.svg';
-import './ArticleListItem.scss';
 import { getSuccessfulArticleCreation } from '../../../redux/selectors/selectors';
+import './ArticleListItem.scss';
 
 export const ArticleListItem = (props) => {
   const { slug, title, isLoggedIn, author, createdAt, tagList, description, openArticle, body, favorited, favoritesCount, } = props;
+
   const history = useHistory();
   const dispatch = useDispatch();
   const editHandle = () => history.push('edit', { slug, title, isLoggedIn, author, createdAt, tagList, description, favorited, favoritesCount, body, });

@@ -29,7 +29,7 @@ export const ArticleForm = (props) => {
   const buttonText = history.location.pathname === '/new-article' ? 'Send' : 'Edit';
   const dispatch = useDispatch();
 
-  function formatTags(tagList) {
+  const formatTags = tagList => {
     return tagList.reduce(
       (acc, tag) => {
         acc.push({ name: tag });
@@ -39,9 +39,16 @@ export const ArticleForm = (props) => {
     );
   }
 
+  const formatTagsFromText = (value) => {
+    return {
+      ...value,
+      tagList: value.tagList.map(tag => tag.name)
+    }
+  }
+
   const defValue = formatTags(tagList);
 
-  const {  handleSubmit, register, formState: { errors, }, setError, control, watch } = useForm({
+  const {  handleSubmit, register, formState: { errors, isDirty, isValid }, setError, control, watch } = useForm({
     defaultValues: {
       tagList: defValue,
       title,
@@ -57,7 +64,14 @@ export const ArticleForm = (props) => {
     name: "tagList",
   });
 
-  const onSubmit = (values) => history.location.pathname === '/new-article' ? dispatch(createArticleCard(values, setError)) : dispatch(editArticleCard(slug, values, setError));
+  const onSubmit = values => {
+    const formatValue = formatTagsFromText(values);
+    if (history.location.pathname === '/new-article') {
+      dispatch(createArticleCard(formatValue, setError))
+    } else {
+      dispatch(editArticleCard(slug, formatValue, setError));
+    }
+  }
 
   if (successfulArticleCreation || !isLoggedIn) {
     return <Redirect to='/' />;
@@ -72,16 +86,17 @@ export const ArticleForm = (props) => {
           <CustomInput register={register} errors={errors} title='Short description' value={watch("description")} placeholder='Title' name='description' />
           <CustomTextArea register={register} value={watch("body")} errors={errors} title='Text' placeholder='Text' name='body' />
           <div className="tags">
+            <span>Tags</span>
             <ul>
               {!fields.length &&
-              <button onClick={() => append({})} type="button">Add tag</button>}
+              <button className='btn btn-outline-info' onClick={() => append({})} type="button">Add tag</button>}
               {fields.map((field, index) => {
                   return (
                     <li className='article__form_content_tags_list-item  d-flex flex-wrap' key={field.id}>
                       <ConditionalInput control={control} name={`tagList.${index}.name`} />
-                      <button type="button" onClick={() => remove(index)}>Delete</button>
+                      <button className='btn btn-outline-danger mx-3' type="button" onClick={() => remove(index)}>Delete</button>
                       {index === fields.length - 1 &&
-                      <button onClick={() => append({name: ''})} type="button">Add tag</button>}
+                      <button className='btn btn-outline-info' onClick={() => append({name: ''})} type="button">Add tag</button>}
                     </li>
                   );
                 },
@@ -89,7 +104,7 @@ export const ArticleForm = (props) => {
             </ul>
           </div>
 
-          <button className='article__form_content_send_btn btn btn-primary' type='submit'>{buttonText}</button>
+          <button className='article__form_content_send_btn btn btn-primary mt-4' disabled={!isDirty || !isValid} type='submit'>{buttonText}</button>
         </form>
       </div>
     </div>

@@ -4,8 +4,6 @@ import { useController } from 'react-hook-form';
 export const ConditionalInput = ((props) => {
   const {
     field: { ref, ...inputProps },
-    fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields }
   } = useController({
     // eslint-disable-next-line react/prop-types,react/destructuring-assignment
     name: props.name,
@@ -16,7 +14,7 @@ export const ConditionalInput = ((props) => {
   });
   return (
     <div className="group" >
-      <input {...inputProps} />
+      <input {...inputProps} required placeholder='Tag' />
     </div>
   )
 })

@@ -80,6 +80,11 @@ const articleReducer = (state = initialState, action) => {
           }
           return article;
         })],
+        currentArticle: {
+          ...state.currentArticle,
+          favorited: action.favorited,
+          favoritesCount: action.favoritesCount,
+        }
       };
     default:
       return state;
