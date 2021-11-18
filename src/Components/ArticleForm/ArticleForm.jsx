@@ -1,8 +1,9 @@
 import React from 'react';
-import { useForm, Controller, useFieldArray, useController } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import  { ConditionalInput } from '../common/ConditionalInput';
@@ -56,7 +57,7 @@ export const ArticleForm = (props) => {
       body
     },
     resolver: yupResolver(schema),
-    mode: 'onTouched',
+    mode: 'onChange',
   });
 
   const {fields, append, remove} = useFieldArray({
@@ -106,6 +107,9 @@ export const ArticleForm = (props) => {
 
           <button className='article__form_content_send_btn btn btn-primary mt-4' disabled={!isDirty || !isValid} type='submit'>{buttonText}</button>
         </form>
+        <div className='errors mt-2'>
+          <ErrorMessage errors={errors} name='uniqueСard' />
+        </div>
       </div>
     </div>
   );

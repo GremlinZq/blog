@@ -72,8 +72,7 @@ export const requestLogin = (email, password, setError) => async dispatch => {
       dispatch(getLoggedIn(true));
 
       const { user } = res.data;
-      const cookieDate = new Date();
-      cookieDate.setMonth(cookieDate.getMonth() + 1);
+      const cookieDate = (new Date(Date.now()+ 86400*1000));
       cookieDate.toUTCString();
 
       cookies.set('authToken', user.token, { expires: cookieDate });

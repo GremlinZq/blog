@@ -139,7 +139,7 @@ export const getArticle = title => async dispatch => {
   }
 };
 
-export const createArticleCard = ({tagList, body, description, title}) => async dispatch => {
+export const createArticleCard = ({tagList, body, description, title}, setError) => async dispatch => {
   try {
     const res = await articlesApi.createArticle(title, description, body, tagList);
 
@@ -148,11 +148,14 @@ export const createArticleCard = ({tagList, body, description, title}) => async 
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-    throw err.response.data;
+    setError('uniqueСard', {
+      type: "server_error",
+      message: err.response.data.errors.title,
+    })
   }
 };
 
-export const editArticleCard = (slug, values) => async dispatch => {
+export const editArticleCard = (slug, values, setError) => async dispatch => {
   try {
     const res = await articlesApi.editArticle(slug, values.title, values.description, values.body, values.tagList);
 
@@ -161,7 +164,10 @@ export const editArticleCard = (slug, values) => async dispatch => {
     }
     dispatch(successfulArticleCreation(false));
   } catch (err) {
-    throw err.response.data;
+    setError('uniqueСard', {
+      type: "server_error",
+      message: err.response.data.errors.title,
+    })
   }
 };
 

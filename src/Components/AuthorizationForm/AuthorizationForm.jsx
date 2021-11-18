@@ -22,8 +22,8 @@ const schema = yup.object().shape({
 const CustomInput = CustomField('input');
 
 const Registration = () => {
-  const { register, formState: { errors }, setError, handleSubmit } = useForm({
-    mode: 'onTouched',
+  const { register, formState: { errors, isValid, isDirty }, setError, handleSubmit } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const Registration = () => {
           <ErrorMessage errors={errors} name='processingPersonalData' />
         </div>
         <div className='create_account'>
-          <button type='submit' className='btn btn-primary'>Create</button>
+          <button type='submit' className='btn btn-primary' disabled={!isValid || !isDirty}>Create</button>
           <div className='create_account-text'>Already have an account?
             <span><Link to={LOGIN_ROUTE}>Sign In</Link></span>
           </div>
@@ -58,8 +58,8 @@ const Registration = () => {
 };
 
 const Authorization = () => {
-  const { register, formState: { errors }, setError, handleSubmit } = useForm({
-    mode: 'onTouched',
+  const { register, formState: { errors, isValid, isDirty }, setError, handleSubmit } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const Authorization = () => {
         <CustomInput register={register} title='Password' name='password' errors={errors} placeholder='Password' />
 
         <div className='create_account'>
-          <button type='submit' className='btn btn-primary'>Login</button>
+          <button type='submit' className='btn btn-primary' disabled={!isValid || !isDirty}>Login</button>
           <div className='create_account-text'>Don’t have an account?
             <span><Link to={REGISTRATION_ROUTE}>Sign Up.</Link></span>
           </div>
